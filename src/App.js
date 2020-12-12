@@ -50,9 +50,12 @@ class App extends React.Component {
   // const url = 'https://hookb.in/Mq6MK39mwBHBKK6OLnVO';
   // const url = 'http://127.0.0.1:5000';
 
-  const url = 'https://us-central1-gcp-ffa.cloudfunctions.net/gcp_cors';
+  // const url = 'https://us-central1-gcp-ffa.cloudfunctions.net/gcp_cors';
+  // const url = 'https://us-central1-gcp-ffa.cloudfunctions.net/gcp_ffa_cache'
+  const url = 'https://us-central1-gcp-ffa.cloudfunctions.net/gcp-ffa-labels-cache'
   let data = new FormData();
-
+  let d = new Date();
+  const startTime = d.getTime();
   data.append(file.name, file, file.name);
   console.log('filename',file.name)
   axios.post(url, data, {
@@ -63,8 +66,13 @@ class App extends React.Component {
     }
   })
   .then((response) => {
+    d = new Date();
+    const endTime = d.getTime();
+    const responseTime = <div>Response Time: {endTime - startTime} ms</div>;
+    console.log(startTime, endTime);
+    console.log('response time', responseTime)
     console.log(response);
-    this.setState({mockData: response.data});
+    this.setState({mockData: response.data, responseTime: responseTime});
     //TODO: RETURN response.data;
   }).catch((error) => {
     //handle error
@@ -161,7 +169,7 @@ class App extends React.Component {
       <Button color="primary" onClick={() => this.makeRequest(this.state.selectedFile) }>Upload Image</Button>
       <Button color="primary" onClick={() => this.plot()}>Show Objects</Button>
       <Button color="primary" onClick={() => this.showLabels()}>Show Labels</Button>
-
+      <div>{this.state.responseTime}</div>
       {this.state.result}
     </div>);
   }
